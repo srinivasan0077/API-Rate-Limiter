@@ -1,5 +1,7 @@
 package org.example.ratelimiter;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +12,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SlidingWindowLogRateLimiter implements RateLimiter{
     private final Map<String, Map<Long,Queue<Long>>> rateLimitMap=new ConcurrentHashMap<>();
 
