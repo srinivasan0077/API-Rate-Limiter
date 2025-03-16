@@ -9,6 +9,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.example.ratelimiter.FixedWindowRateLimiter;
 import org.example.ratelimiter.SlidingWindowLogRateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,7 @@ public class RateLimiterAspect {
     private FixedWindowRateLimiter fixedWindowRateLimiter;
 
     @Autowired
+    @Qualifier("slidingWindowLogRateLimiter")
     private SlidingWindowLogRateLimiter slidingWindowLogRateLimiter;
 
     private String getKey(Keys[] keys,HttpServletRequest request,Method method){

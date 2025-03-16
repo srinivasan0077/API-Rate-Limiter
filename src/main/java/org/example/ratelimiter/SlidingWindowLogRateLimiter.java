@@ -1,6 +1,7 @@
 package org.example.ratelimiter;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class SlidingWindowLogRateLimiter implements RateLimiter{
     private final Map<String, Map<Long,Queue<Long>>> rateLimitMap=new ConcurrentHashMap<>();
 
