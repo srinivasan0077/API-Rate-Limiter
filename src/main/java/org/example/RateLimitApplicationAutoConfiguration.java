@@ -8,5 +8,4 @@ import org.springframework.scheduling.annotation.Scheduled;
 @Configuration
 @ConditionalOnMissingBean(Scheduled.class) // Enable only if the user hasn't done it
 @EnableScheduling
-public class RateLimitApplicationAutoConfiguration {
-}
+public class RateLimitApplicationAutoConfiguration {}
