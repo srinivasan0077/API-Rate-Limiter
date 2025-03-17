@@ -1,5 +1,7 @@
 package org.example.ratelimiter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class SlidingWindowLogRateLimiter implements RateLimiter{
+    private static final Logger logger = LoggerFactory.getLogger(SlidingWindowLogRateLimiter.class);
     private final Map<String, Map<Long,Queue<Long>>> rateLimitMap=new ConcurrentHashMap<>();
 
     @Override
@@ -39,6 +42,7 @@ public class SlidingWindowLogRateLimiter implements RateLimiter{
 
     @Scheduled(fixedDelay = 30*60*1000)
     public void clearOlderWindows(){
+        logger.info("*********SlidingWindowLogRateLimiter Cleanup Process************");
         long currentTime = System.currentTimeMillis();
 
         rateLimitMap.forEach((key, val) -> {

@@ -27,10 +27,10 @@ public class FixedWindowRateLimiter implements RateLimiter{
              windows.entrySet().removeIf(window -> window.getKey() < currentTime);
              rateLimitMap.putIfAbsent(key, windows);
              int count=windows.getOrDefault(currWindow,0);
-             if(count<maxLimit) {
-                 windows.put(currWindow, count + 1);
+             if(count>=maxLimit) {
                  return false;
              }
+             windows.put(currWindow, count + 1);
          }
          return true;
     }

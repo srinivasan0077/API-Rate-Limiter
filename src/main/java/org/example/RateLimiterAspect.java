@@ -51,10 +51,13 @@ public class RateLimiterAspect {
             switch (key){
                 case URL :
                     stringBuilder.append(getURLRegex(method));
+                    break;
                 case USER_IP:
                     stringBuilder.append(getClientIp(request));
+                    break;
                 case USER_ID:
                     stringBuilder.append(getUserId(request));
+                    break;
 
             }
         }
@@ -87,25 +90,25 @@ public class RateLimiterAspect {
         StringBuilder stringBuilder=new StringBuilder();
         if(method.getDeclaringClass().isAnnotationPresent(RequestMapping.class)){
             RequestMapping requestMapping=method.getDeclaringClass().getAnnotation(RequestMapping.class);
-            if(requestMapping.path().length>0){
-                stringBuilder.append(requestMapping.path()[0]);
+            if(requestMapping.value().length>0){
+                stringBuilder.append(requestMapping.value()[0]);
             }
         }
 
         if(method.isAnnotationPresent(RequestMapping.class)){
             RequestMapping requestMapping=method.getAnnotation(RequestMapping.class);
-            if(requestMapping.path().length>0){
-                stringBuilder.append(requestMapping.path()[0]);
+            if(requestMapping.value().length>0){
+                stringBuilder.append(requestMapping.value()[0]);
             }
         }else if(method.isAnnotationPresent(GetMapping.class)){
             GetMapping getMapping=method.getAnnotation(GetMapping.class);
-            if(getMapping.path().length>0){
-                stringBuilder.append(getMapping.path()[0]);
+            if(getMapping.value().length>0){
+                stringBuilder.append(getMapping.value()[0]);
             }
         }else if(method.isAnnotationPresent(PostMapping.class)){
             PostMapping postMapping=method.getAnnotation(PostMapping.class);
-            if(postMapping.path().length>0){
-                stringBuilder.append(postMapping.path()[0]);
+            if(postMapping.value().length>0){
+                stringBuilder.append(postMapping.value()[0]);
             }
         }
 
@@ -119,13 +122,15 @@ public class RateLimiterAspect {
             String key = getKey(rateLimit.keys(), attributes.getRequest(),((MethodSignature)joinPoint.getSignature()).getMethod());
             switch (rateLimit.rateLimitMethod()){
                 case FIXED_WINDOW :
-                    if(fixedWindowRateLimiter.isAllowed(key, rateLimit.maxRequests(), rateLimit.windowSize())){
+                    if(!fixedWindowRateLimiter.isAllowed(key, rateLimit.maxRequests(), rateLimit.windowSize())){
                         throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Rate limit exceeded");
                     }
+                    break;
                 case SLIDING_WINDOW_LOG:
-                    if(slidingWindowLogRateLimiter.isAllowed(key, rateLimit.maxRequests(), rateLimit.windowSize())){
+                    if(!slidingWindowLogRateLimiter.isAllowed(key, rateLimit.maxRequests(), rateLimit.windowSize())){
                         throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Rate limit exceeded");
                     }
+                    break;
             }
         }
         return joinPoint.proceed();
