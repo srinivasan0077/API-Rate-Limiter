@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.example.ratelimiter.FixedWindowRateLimiter;
 import org.example.ratelimiter.SlidingWindowLogRateLimiter;
+import org.example.ratelimiter.SlidingWindowRateLimiter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,10 @@ public class RateLimiterAspect {
     @Autowired
     @Qualifier("slidingWindowLogRateLimiter")
     private SlidingWindowLogRateLimiter slidingWindowLogRateLimiter;
+
+    @Autowired
+    @Qualifier("slidingWindowRateLimiter")
+    private SlidingWindowRateLimiter slidingWindowRateLimiter;
 
     private String getKey(Keys[] keys,HttpServletRequest request,Method method){
         StringBuilder stringBuilder=new StringBuilder();
@@ -128,6 +133,11 @@ public class RateLimiterAspect {
                     break;
                 case SLIDING_WINDOW_LOG:
                     if(!slidingWindowLogRateLimiter.isAllowed(key, rateLimit.maxRequests(), rateLimit.windowSize())){
+                        throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Rate limit exceeded");
+                    }
+                    break;
+                case SLIDING_WINDOW:
+                    if(!slidingWindowRateLimiter.isAllowed(key, rateLimit.maxRequests(),rateLimit.windowSize())){
                         throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Rate limit exceeded");
                     }
                     break;

@@ -17,7 +17,7 @@ public class TestController {
     }
 
     @GetMapping("/ping2")
-    @RateLimit(maxRequests = 5,rateLimitMethod = RateLimitMethod.FIXED_WINDOW)
+    @RateLimit(maxRequests = 5,rateLimitMethod = RateLimitMethod.SLIDING_WINDOW)
     public String pingServer2(){
         return "Success";
     }
